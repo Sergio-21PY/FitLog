@@ -1,6 +1,7 @@
 package com.fitlog.backend.controller;
 
 import com.fitlog.backend.model.User;
+import com.fitlog.backend.repository.UserRepository;
 import com.fitlog.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,10 +22,13 @@ public class UserController{
     private UserService userService;
     @Autowired
     private com.fitlog.backend.security.JwtUtil jwtUtil;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping
-    public List<User> getAllUsers(){
-        return userService.getAllUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return ResponseEntity.ok(users);
     }
 
     @PostMapping("/register")
@@ -51,6 +55,11 @@ public class UserController{
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas: email o contraseña inválidos.");
         }
+
+
     }
+
+
+
 
 }

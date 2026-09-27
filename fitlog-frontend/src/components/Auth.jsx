@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { registerUser, loginUser } from '../services/authService';
 import './Auth.css';
 
-export default function Auth() {
+export default function Auth({ setToken }) { // <-- Recibimos setToken como prop
     const [isLogin, setIsLogin] = useState(true);
     const [formData, setFormData] = useState({ userName: '', email: '', password: '' });
     const [message, setMessage] = useState('');
     const [isError, setIsError] = useState(false);
-    const [isLoading, setIsLoading] = useState(false); // Nuevo para fiabilidad/experiencia de usuario
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,8 +22,8 @@ export default function Auth() {
         try {
             if (isLogin) {
                 const data = await loginUser({ email: formData.email, password: formData.password });
-                setMessage(`¡Bienvenido de nuevo, ${data.user.userName || data.user.email}!`);
                 localStorage.setItem('token', data.token); // Guardado seguro del token
+                setToken(data.token); // <-- Actualiza el estado global y cambia al Dashboard de inmediato
             } else {
                 await registerUser(formData);
                 setMessage('¡Registro exitoso! Ahora puedes iniciar sesión.');

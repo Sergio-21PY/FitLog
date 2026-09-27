@@ -1,22 +1,22 @@
-package com.fitlog.backend.security;
+package com.fitlog.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Desactivamos CSRF para pruebas con Postman/React
+                .cors(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register", "/api/users/login").permitAll() // Rutas públicas
-                        .anyRequest().authenticated() // El resto requerirá autenticación
+                        .requestMatchers("/api/users/**", "/api/exercises/**", "/api/logs/**").permitAll()
+                        .anyRequest().authenticated()
                 );
 
         return http.build();
